@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Chess Position Flashcards</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row mb-3">
+            <div class="col">
+                <h1>Chess by Chicken Sexing :)</h1>
+            </div>
+        </div>
+        <div class="row mb-3" id="top">
+            <h2>Who has the advantage? </h2>
+            <img src="/picture?board_fen={{ move['board_fen'] }}" style="max-width: 100%; max-height: 80vh; height: auto;" />
+        </div>
+        <div class="row mb-3">
+            <div id="feedback_white_correct" class="text-success" style="display: none;">
+                Correct! White has the advantage.
+            </div>
+            <div id="feedback_black_correct" class="text-success" style="display: none;">
+                Correct! Black has the advantage.
+            </div>
+            <div id="feedback_white_incorrect" class="text-danger" style="display: none;">
+                Incorrect! White has the advantage.
+            </div>
+            <div id="feedback_black_incorrect" class="text-danger" style="display: none;">
+                Incorrect! Black has the advantage.
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-2">
+                <button type="button" id="white" class="btn btn-primary">White</button>
+                
+            </div>
+            <div class="col-2">
+                <button type="button" id="tie" class="btn btn-primary">Tie</button>
+            </div>
+            <div class="col-2">
+                <button type="button" id="black" class="btn btn-primary">Black</button>
+            </div>
+        </div>
+        <div class="row mb-3" style="display: none;" id="next">
+            <div class="col">
+                <button type="button" id="nextButton" class="btn btn-primary">Next</button>
+                {% if move['evaluation']['type'] == 'cp' %}
+                <div class="text-muted" style="text-decoration: dotted;">Analysis value {{ (move['evaluation']['value'] / 100) | round(2) }}</div>
+                {% else %}
+                <div class="text-muted" style="text-decoration: dotted;">Mate in {{ move['evaluation']['value'] }}</div>
+                {% endif %}
+                <div class="text-muted" style="text-decoration: dotted;"><i>({{ move['board_fen'] }})</i></div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        var answer = "{{ 'white' if move['evaluation']['value'] > 0 else 'black' if move['evaluation']['value'] < 0 else 'tie' }}";
+        $(document).ready(function () {
+            $('#white').click(function () {
+                if (answer == 'white') {
+                    $('#white').removeClass('btn-primary').addClass('btn-success').addClass('disabled');
+                    $('#black').removeClass('btn-primary').addClass('btn-danger').addClass('disabled');
+                    $('#feedback_white_correct').show();
+                } else if (answer == 'black') {
+                    $('#white').removeClass('btn-primary').addClass('btn-danger').addClass('disabled');
+                    $('#black').removeClass('btn-primary').addClass('btn-success').addClass('disabled');
+                    $('#feedback_black_incorrect').show();
+                } else if (answer == 'tie') {
+                    $('#white').removeClass('btn-primary').addClass('btn-danger').addClass('disabled');
+                    $('#black').removeClass('btn-primary').addClass('btn-danger').addClass('disabled');
+                    $('#feedback_black_incorrect').text("Incorrect! Its a tie!");
+                    $('#feedback_black_incorrect').show();
+                }
+                $('#next').show();
+            })
+            $('#black').click(function () {
+                if (answer == 'black') {
+                    $('#black').removeClass('btn-primary').addClass('btn-success').addClass('disabled');
+                    $('#white').removeClass('btn-primary').addClass('btn-danger').addClass('disabled');
+                    $('#feedback_black_correct').show();
+                } else if (answer == 'white') {
+                    $('#black').removeClass('btn-primary').addClass('btn-danger').addClass('disabled');
+                    $('#white').removeClass('btn-primary').addClass('btn-success').addClass('disabled');
+                    $('#feedback_white_incorrect').show();
+                } else if (answer == 'tie') {
+                    $('#white').removeClass('btn-primary').addClass('btn-danger').addClass('disabled');
+                    $('#black').removeClass('btn-primary').addClass('btn-danger').addClass('disabled');
+                    $('#feedback_white_incorrect').text("Incorrect! Its a tie!");
+                    $('#feedback_white_incorrect').show();
+                }
+                $('#next').show();
+            })
+            $('#nextButton').click(function () {
+                window.location.replace("/random");
+                window.scrollTo(0, 0);
+            });
+        });
+    </script>
+</body>
+
+</html>

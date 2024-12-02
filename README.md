@@ -1,5 +1,5 @@
-# REPONAME
+# Chess Position Trainer
 
-This is REPONAME.
+This is a Chess Position Trainer.
 
 **This repo STANs ENHYPEN**

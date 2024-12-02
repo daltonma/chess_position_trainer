@@ -1,7 +1,5 @@
 # Ignore all files under subdirectories
 /*
-# Except for the root directory
-!/*
 # Except for the root directory's .gitignore file
 !.gitignore
 # Except for .github/
@@ -9,6 +7,16 @@
 # Except for .github/*
 !.github/*
 # Except for templates/*
+!templates/
 !templates/*
 # Except for templates/*/*
-!templates/*/*
+!templates/*
+# Except for root directory's files
+!*.py
+!*.sh
+!*.md
+!*.txt
+!*.yml
+!*.yaml
+!*.toml
+!*.lock
