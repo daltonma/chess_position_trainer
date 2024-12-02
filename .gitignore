@@ -1,0 +1,14 @@
+# Ignore all files under subdirectories
+/*
+# Except for the root directory
+!/*
+# Except for the root directory's .gitignore file
+!.gitignore
+# Except for .github/
+!.github/*
+# Except for .github/*
+!.github/*
+# Except for templates/*
+!templates/*
+# Except for templates/*/*
+!templates/*/*
