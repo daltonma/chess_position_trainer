@@ -1,0 +1,130 @@
+<div id="basic">
+    <div class="row mb-3">
+        <h2>Who has the advantage? (<span id="currentmove" style="font-style: italic"></span>)</h2>
+    </div>
+    <div class="row mb-3">
+        <div id="chessboard" style="max-width: 100%; max-height: 50vh; height: auto;">
+            <div id="interactive" style="width: 25%;"></div>
+            <img src="/picture" id="picture" style="display: none"/>
+        </div>
+
+    </div>
+    <div class="row mb-3" id="feedback">
+        <div id="feedback_white_correct" class="text-success" style="display: none;">
+            Correct! White has the advantage.
+        </div>
+        <div id="feedback_black_correct" class="text-success" style="display: none;">
+            Correct! Black has the advantage.
+        </div>
+        <div id="feedback_white_incorrect" class="text-danger" style="display: none;">
+            Incorrect! White has the advantage.
+        </div>
+        <div id="feedback_black_incorrect" class="text-danger" style="display: none;">
+            Incorrect! Black has the advantage.
+        </div>
+        <div id="feedback_tie_correct" class="text-success" style="display: none;">
+            Correct! It is a tie.
+        </div>
+        <div id="feedback_tie_incorrect" class="text-danger" style="display: none;">
+            Incorrect! It is a tie.
+        </div>
+    </div>
+    <div class="row mb-3">
+        <button type="button" id="white" class="col-1 mb-1 btn btn-primary">White</button>
+        <button type="button" id="tie" class="col-1 mb-1 btn btn-primary">Tie</button>
+        <button type="button" id="black" class="col-1 mb-1 btn btn-primary">Black</button>
+    </div>
+    <div class="row mb-3" style="display: none;" id="next">
+        <div class="col">
+            <button type="button nextButton" id="nextButton" class="btn btn-primary">Next</button>
+            <div class="text-muted" style="text-decoration: underline dotted;" data-bs-toggle="tooltip"
+                data-bs-title="The greater the value, the more of an advantage white has." id="value">Analysis value
+            </div>
+            <div class="text-muted" id="fen"><i>()</i></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Check answers (or at least listen for button clicked, should probably refactor it)
+    $('#white').click(function () {
+        // If the correct answer is white, colour the button for white green, and red for the other ones
+        if (answer == 'white') {
+            $('#white').removeClass('btn-primary').addClass('btn-success').addClass('disabled');
+            $('#tie').removeClass('btn-primary').addClass('btn-danger').addClass('disabled');
+            $('#black').removeClass('btn-primary').addClass('btn-danger').addClass('disabled');
+            // Show the green text for "they said white and the answer was white, good job!"
+            $('#feedback_white_correct').show();
+            lastAnswers.push("✅");
+        } else if (answer == 'black') {
+            // Otherwise, if the answer is black (but they said white), we will colour the button for white green, and red for others
+            $('#white').removeClass('btn-primary').addClass('btn-danger').addClass('disabled');
+            $('#tie').removeClass('btn-primary').addClass('btn-danger').addClass('disabled');
+            $('#black').removeClass('btn-primary').addClass('btn-success').addClass('disabled');
+            // And show the feedback for "they said white and the answer was black, oof sucks for you!"
+            $('#feedback_black_incorrect').show();
+            lastAnswers.push("❌");
+        } else if (answer == 'tie') {
+            // Same for tie
+            $('#white').removeClass('btn-primary').addClass('btn-danger').addClass('disabled');
+            $('#tie').removeClass('btn-primary').addClass('btn-danger').addClass('disabled');
+            $('#black').removeClass('btn-primary').addClass('btn-danger').addClass('disabled');
+            $('#feedback_tie_incorrect').show();
+            lastAnswers.push("❌");
+        }
+        // We show the info for the question including FEN, and next button
+        $('#next').show();
+        // And update the answers
+        updateLastAnswers();
+    })
+    // Similar for black
+    $('#black').click(function () {
+        if (answer == 'black') {
+            $('#black').removeClass('btn-primary').addClass('btn-success').addClass('disabled');
+            $('#tie').removeClass('btn-primary').addClass('btn-danger').addClass('disabled');
+            $('#white').removeClass('btn-primary').addClass('btn-danger').addClass('disabled');
+            $('#feedback_black_correct').show();
+            lastAnswers.push("✅");
+        } else if (answer == 'white') {
+            $('#black').removeClass('btn-primary').addClass('btn-danger').addClass('disabled');
+            $('#tie').removeClass('btn-primary').addClass('btn-danger').addClass('disabled');
+            $('#white').removeClass('btn-primary').addClass('btn-success').addClass('disabled');
+            $('#feedback_white_incorrect').show();
+            lastAnswers.push("❌");
+        } else if (answer == 'tie') {
+            $('#white').removeClass('btn-primary').addClass('btn-danger').addClass('disabled');
+            $('#tie').removeClass('btn-primary').addClass('btn-success').addClass('disabled');
+            $('#black').removeClass('btn-primary').addClass('btn-danger').addClass('disabled');
+            $('#feedback_tie_incorrect').show();
+            lastAnswers.push("❌");
+        }
+        $('#next').show();
+        updateLastAnswers();
+    })
+    $("#tie").click(function () {
+        if (answer == 'tie') {
+            $('#tie').removeClass('btn-primary').addClass('btn-success').addClass('disabled');
+            $('#white').removeClass('btn-primary').addClass('btn-danger').addClass('disabled');
+            $('#black').removeClass('btn-primary').addClass('btn-danger').addClass('disabled');
+            $('#feedback_tie_correct').show();
+            lastAnswers.push("✅");
+        } else if (answer == 'white') {
+            $('#tie').removeClass('btn-primary').addClass('btn-danger').addClass('disabled');
+            $('#white').removeClass('btn-primary').addClass('btn-success').addClass('disabled');
+            $('#black').removeClass('btn-primary').addClass('btn-danger').addClass('disabled');
+            $('#feedback_white_incorrect').show();
+            lastAnswers.push("❌");
+        } else if (answer == 'black') {
+            $('#tie').removeClass('btn-primary').addClass('btn-danger').addClass('disabled');
+            $('#white').removeClass('btn-primary').addClass('btn-danger').addClass('disabled');
+            $('#black').removeClass('btn-primary').addClass('btn-success').addClass('disabled');
+            $('#feedback_black_incorrect').show();
+            lastAnswers.push("❌");
+        }
+        $('#next').show();
+        updateLastAnswers();
+    })
+    $("#nextButton").click(function () {
+        next()
+    })
+</script>

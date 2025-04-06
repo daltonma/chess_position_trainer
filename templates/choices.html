@@ -1,0 +1,227 @@
+<div id="choosemove">
+    <h2>Choose the best move (<span id="currentcolor"></span>'s move)</h2>
+    <div id="board" style="width: 25%; display: block;">
+        <div id="interactive" style="width: 100%;"></div>
+        <img src="/picture" id="picture" style="display: none" />
+    </div>
+    </br>
+    <div id="choices">
+        <div class="choice hover" id="choice-1"></div>
+        <div class="choice hover" id="choice-2"></div>
+        <div class="choice hover" id="choice-3"></div>
+        <div class="choice hover" id="choice-4"></div>
+    </div>
+</div>
+
+<div class="row mb-3" style="margin-top: 10px;display: none;" id="next">
+    <div class="col">
+        <button type="button" id="nextButton" class="btn btn-primary">Next</button>
+        <div class="text-muted" style="text-decoration: underline dotted;" data-bs-toggle="tooltip"
+            data-bs-title="The greater the value, the more of an advantage white has." id="value">Analysis value
+        </div>
+        <div class="text-muted" id="fen"><i>()</i></div>
+    </div>
+</div>
+
+<div class="row mb-3 alert alert-info alert-dismissable fade show" role="alert" style="margin-top: 10px;" id="info">
+    💡 Tip: Right-click a choice to disable it. <br />Hover over a choice to see the result.
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+
+
+<script>
+    var board = null;
+    $(".choice").hover(function () {
+        console.log("hover")
+        var game = new Chess($("#board").data('board_fen'));
+        game.move($(this).text());
+        board.position(game.fen());
+    }, function () {
+        // Revert back to the original board position when hover ends
+        board.position($("#board").data('board_fen'));
+    });
+    $("#nextButton").click(function () {
+        next();
+    })
+    $(".choice").contextmenu(function (e) {
+        e.preventDefault(); // Prevent the default context menu
+        let isDisabled = $(this).data('isDisabled');
+        if (isDisabled) {
+            $(this).data('isDisabled', false);
+            $(this).css('opacity', '1'); // Reset opacity to indicate enabled
+            $(this).removeClass('disabled');
+            $(this).addClass('hover') // Add hover effect
+            $(this).off('click').on('click', function () {
+                // Re-enable click functionality
+                const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+                const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+                let isCorrect = $(this).data('isCorrect');
+                if (isCorrect) {
+                    $(this).addClass('correct');
+                    $('#next').show();
+                    lastAnswers.push("✅");
+                    updateLastAnswers();
+                    var game = new Chess($("#board").data('board_fen'));
+                    game.move($(this).text());
+                    board.position(game.fen());
+                } else {
+                    $(this).addClass('incorrect');
+                    $('#next').show();
+                    lastAnswers.push("❌");
+                    updateLastAnswers();
+                    $(".choice").each(function () {
+                        if ($(this).data('isCorrect')) {
+                            $(this).addClass('correct');
+                            var game = new Chess($("#board").data('board_fen'));
+                            game.move($(this).text());
+                            board.position(game.fen());
+                        } else {
+                            $(this).addClass('incorrect');
+                        }
+                    });
+                }
+                $(".choice").off('click');
+                $(".choice").off('contextmenu')
+                $(".choice").off('mouseenter mouseleave');
+                $(".choice").removeClass('hover');
+                $("#choices").addClass('disabled');
+            });
+        } else {
+            $(this).data('isDisabled', true);
+            $(this).css('opacity', '0.5'); // Change opacity to indicate disabled
+            $(this).off('click') // Disable click functionality
+            $(this).removeClass('hover') // Remove hover effect
+            $(this).off('mouseenter mouseleave') // Disable hover effect
+            $(this).addClass('disabled');
+        }
+    });
+    $(".choice").click(function () {
+        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+        const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+        let isCorrect = $(this).data('isCorrect');
+        if (isCorrect) {
+            $(this).addClass('correct');
+            $('#next').show();
+            lastAnswers.push("✅");
+            updateLastAnswers();
+            var game = new Chess($("#board").data('board_fen'));
+            game.move($(this).text());
+            board.position(game.fen());
+        } else {
+            $(this).addClass('incorrect');
+            $('#next').show();
+            lastAnswers.push("❌");
+            updateLastAnswers();
+            // Show the correct answer
+            $(".choice").each(function () {
+                if ($(this).data('isCorrect')) {
+                    $(this).addClass('correct');
+                    var game = new Chess($("#board").data('board_fen'));
+                    game.move($(this).text());
+                    board.position(game.fen());
+                } else {
+                    $(this).addClass('incorrect');
+                }
+            });
+        }
+        $(".choice").off('click')
+        $(".choice").off('mouseenter mouseleave');
+        $(".choice").removeClass('hover');
+        $(".choice").off('contextmenu')
+        $("#choices").addClass('disabled');
+
+    });
+
+    function getChoices() {
+        $.get('/api/random').then((card) => {
+            $('#currentcolor').text(card.color);
+            board = Chessboard("interactive", card.board_fen);
+            // let img = document.createElement('img');
+            // img.src = `/picture?board_fen=${card.board_fen}`;
+            // $('#board').append(img);
+            $("#board").data('board_fen', card.board_fen);
+            $.get('/api/choices?board_fen=' + card.board_fen).then((choices) => {
+                // Choose random choice to be correct
+                let correctIndex = Math.floor(Math.random() * 4);
+                // Set the correct choice
+                $('#choice-' + (correctIndex + 1)).text(choices.best_move);
+                $('#choice-' + (correctIndex + 1)).data('isCorrect', true);
+                // Set the other choices
+                for (let i = 0; i < 4; i++) {
+                    if (i !== correctIndex) {
+                        let remainingChoices = choices.choices.filter(choice => choice !== choices.best_move);
+                        $('#choice-' + (i + 1)).text(remainingChoices.splice(Math.floor(Math.random() * remainingChoices.length), 1)[0]);
+                        $('#choice-' + (i + 1)).data('isCorrect', false);
+                    }
+                }
+            })
+            $('#fen').text(card.board_fen);
+            $('#value').text((card.value / 100).toFixed(2));
+        })
+    }
+</script>
+
+<style>
+    body {
+        overflow: hidden;
+    }
+
+    #choices {
+        display: flex;
+        flex-direction: row;
+        margin-top: 20px;
+        justify-content: center;
+        align-items: center;
+        max-width: 50%;
+        border: 2px solid #dfdfdf;
+        border-radius: 5px;
+    }
+
+    #info {
+        position: fixed;
+        bottom: 100px;
+        right: 100px;
+        background-color: #f9f9f9;
+        padding: 10px;
+        border: 1px solid #dfdfdf;
+        border-radius: 5px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .choice {
+        border: 1.5px solid #dfdfdf;
+        border-radius: 5px;
+        cursor: pointer;
+        padding: 10px;
+        margin: 5px;
+    }
+
+    .choice.correct {
+        border: 1px solid #00b81f;
+        background-color: #adeeb8;
+        cursor: default;
+    }
+
+    .choice.incorrect {
+        border: 1px solid #b80000;
+        background-color: #ebb6b6;
+        cursor: default;
+    }
+
+    .choice.disabled {
+        cursor: default;
+        border: 2px dashed #dfdfdf;
+        opacity: 0.5;
+    }
+
+    #choices.disabled {
+        pointer-events: none;
+        opacity: 0.5;
+    }
+
+    .hover:hover {
+        background-color: #0077ff;
+        color: white;
+        transition: background-color 1s ease;
+    }
+</style>

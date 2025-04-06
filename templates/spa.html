@@ -9,255 +9,128 @@
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/jquery"></script>
+    <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/static/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/static/chess.js"></script>
+    <script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"
+        integrity="sha384-8Vi8VHwn3vjQ9eUHUxex3JSN/NFqUg3QbPyX8kWyb93+8AC/pPWTzj+nHtbC5bxD"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css"
+        integrity="sha384-q94+BZtLrkL1/ohfjR8c6L+A6qzNH9R2hBLwyoAfu3i/WCvQjzL2RQJ3uNHDISdU" crossorigin="anonymous">
 </head>
 
-<body class="container-fluid">
+<body class="container-fluid" style="overflow: none">
     <div class="row mb-3">
         <div class="col">
-            <h1>Chess by Chicken Sexing :)</h1>
+            <h1>Chess Training</h1>
         </div>
     </div>
-    <div id="basic">
-        <div class="row mb-3">
-            <h2>Who has the advantage? </h2>
-        </div>
-        <div class="row mb-3">
-            <img src="/picture" id="picture" style="max-width: 100%; max-height: 50vh; height: auto;" />
-        </div>
-        <div class="row mb-3">
-            <div id="feedback_white_correct" class="text-success" style="display: none;">
-                Correct! White has the advantage.
-            </div>
-            <div id="feedback_black_correct" class="text-success" style="display: none;">
-                Correct! Black has the advantage.
-            </div>
-            <div id="feedback_white_incorrect" class="text-danger" style="display: none;">
-                Incorrect! White has the advantage.
-            </div>
-            <div id="feedback_black_incorrect" class="text-danger" style="display: none;">
-                Incorrect! Black has the advantage.
-            </div>
-            <div id="feedback_tie_correct" class="text-success" style="display: none;">
-                Correct! It is a tie.
-            </div>
-            <div id="feedback_tie_incorrect" class="text-danger" style="display: none;">
-                Incorrect! It is a tie.
-            </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-4"></div>
-            <div class="col-2">
-                <button type="button" id="white" class="btn btn-primary">White</button>
-
-            </div>
-            <div class="col-2">
-                <button type="button" id="tie" class="btn btn-primary">Tie</button>
-            </div>
-            <div class="col-2">
-                <button type="button" id="black" class="btn btn-primary">Black</button>
-            </div>
-            <div class="col-4"></div>
-        </div>
-        <div class="row mb-3" style="display: none;" id="next">
-            <div class="col">
-                <button type="button nextButton" id="nextButton" class="btn btn-primary">Next</button>
-                <div class="text-muted" style="text-decoration: dotted;" id="value">Analysis value </div>
-                <div class="text-muted" style="text-decoration: dotted;" id="fen"><i>()</i></div>
-            </div>
-        </div>
+    <div id="card">
     </div>
-    <div id="compare" style="display: none;">
-        <div class="row mb-3" id="compare_prompt">
-            <h2>In which position is BLACK better off? </h2>
+    <div id="loader" style="display:none;flex-direction:column;align-items:center;">
+        <div class="spinner-grow text-success" role="status">
+            <span class="visually-hidden">Loading...</span>
         </div>
-        <div class="row mb-3">
-            <div class="col-4">
-                <img src="/picture" id="picture1" class="option" style="max-width: 100%; max-height: 50vh; height: auto;" />
-            </div>
-            <div class="col-4">
-                <img src="/picture" id="picture2" class="option" style="max-width: 100%; max-height: 50vh; height: auto;" />
-            </div>
-        </div>
-        <div class="row mb-3">
-            <div id="feedback_position1_correct" class="text-success" style="display: none;">
-                Correct! Position 1 is better for Black.
-            </div>
-            <div id="feedback_position2_correct" class="text-success" style="display: none;">
-                Correct! Position 2 is better for Black.
-            </div>
-            <div id="feedback_position1_incorrect" class="text-danger" style="display: none;">
-                Incorrect! Position 1 is better for Black.
-            </div>
-            <div id="feedback_position2_incorrect" class="text-danger" style="display: none;">
-                Incorrect! Position 2 is better for Black.
-            </div>
-        </div>
-        <div class="row mb-3" style="display: none;" id="next">
-            <div class="col">
-                <button type="button nextButton" id="nextButton2" class="btn btn-primary">Next</button>
-                
-            </div>
-        </div>
-        <div class="row mb-3" style="display: none;" id="info">
-            <div class="col-4">
-                <div class="text-muted" style="text-decoration: dotted;" id="value1">Analysis value </div>
-                <div class="text-muted" style="text-decoration: dotted;" id="fen1"><i>()</i></div>
-            </div>
-            <div class="col-4">
-                <div class="text-muted" style="text-decoration: dotted;" id="value2">Analysis value </div>
-                <div class="text-muted" style="text-decoration: dotted;" id="fen2"><i>()</i></div>
-            </div>
-        </div>
+        <br />
+        <div>Loading ...</div>
     </div>
-
-
     <div class="row mb-3">
         <div class="col text-end">
             <div id="lastAnswers" class="border p-2">
                 <h5>Last 5 Answers</h5>
-                <span id="answersList"></span>
+                <span id="answersList"></span><br />
+                <span id="accuracy"></span>
             </div>
         </div>
     </div>
+
+    <footer class="row mb-3">
+        <div class="col text-center">
+            Created by Dalton Ma (<a href="https://github.com/bohrium2b">bohrium2b</a>).
+        </div>
+    </footer>
+    <div id="test" style="display: none">
+
+    </div>
     <style>
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 3px;
+            right: 3px;
+            background-color: #f8f9fa;
+            padding: 10px;
+            text-align: center;
+            border-radius: 5px;
+
+        }
         #lastAnswers {
             position: absolute;
             top: 10px;
             right: 10px;
             width: 200px;
             background-color: white;
+            border-radius: 5px;
         }
+
         .option {
             cursor: pointer;
         }
+
+        #accuracy {
+            color: grey;
+            font-size: 0.8em;
+        }
+
+        #loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
     </style>
     <script>
-        // randomly switch between basic and compare
+        // randomly switch between basic and compare and choose
         var answer = null;
         var lastAnswers = [];
-        var isBasic = Math.random() < 0.3;
+        var questionType = Math.floor(Math.random() * 3); // 0 = basic, 1 = compare, 2 = choose
+        var useChessJs = false;
+
+        // onload, we will pull results from the browser storage and parse it into a list
         $(document).ready(function () {
+            try {
+                var board = Chessboard("test")
+                useChessJs = true;
+            } catch (error) {
+                console.log(`Not using Chessboard.js bcs error ${error}`)
+                useChessJs = false;
+            }
+            console.log(`using chessboardjs ${useChessJs}`)
             // Get lastAnswers from browser
             lastAnswers = JSON.parse(localStorage.getItem("lastAnswers")) || [];
+            // Update the HTML display of past 5 answers :)
             updateLastAnswers();
-            console.log(isBasic)
-            if (isBasic) {
-                $("#basic").show();
-                $("#compare").hide();
-            } else {
-                $("#basic").hide();
-                $("#compare").show();
-            }
-            if (isBasic) {
-                getBasic();
-            } else {
-                getCompare();
-            } 
-
+            console.log(questionType)
+            // Prep the display
+            next()
+            // Toggle the tooltips for stuff - only need to do this once
+            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+            const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
         });
-        $('#white').click(function () {
-            if (answer == 'white') {
-                $('#white').removeClass('btn-primary').addClass('btn-success').addClass('disabled');
-                $('#tie').removeClass('btn-primary').addClass('btn-danger').addClass('disabled');
-                $('#black').removeClass('btn-primary').addClass('btn-danger').addClass('disabled');
-                $('#feedback_white_correct').show();
-                lastAnswers.push("✅");
-            } else if (answer == 'black') {
-                $('#white').removeClass('btn-primary').addClass('btn-danger').addClass('disabled');
-                $('#tie').removeClass('btn-primary').addClass('btn-danger').addClass('disabled');
-                $('#black').removeClass('btn-primary').addClass('btn-success').addClass('disabled');
-                $('#feedback_black_incorrect').show();
-                lastAnswers.push("❌");
-            } else if (answer == 'tie') {
-                $('#white').removeClass('btn-primary').addClass('btn-danger').addClass('disabled');
-                $('#tie').removeClass('btn-primary').addClass('btn-danger').addClass('disabled');
-                $('#black').removeClass('btn-primary').addClass('btn-danger').addClass('disabled');
-                $('#feedback_black_incorrect').text("Incorrect! Its a tie!");
-                $('#feedback_black_incorrect').show();
-                lastAnswers.push("❌");
-            }
-            $('#next').show();
-            updateLastAnswers();
-        })
-        $('#black').click(function () {
-            if (answer == 'black') {
-                $('#black').removeClass('btn-primary').addClass('btn-success').addClass('disabled');
-                $('#tie').removeClass('btn-primary').addClass('btn-danger').addClass('disabled');
-                $('#white').removeClass('btn-primary').addClass('btn-danger').addClass('disabled');
-                $('#feedback_black_correct').show();
-                lastAnswers.push("✅");
-            } else if (answer == 'white') {
-                $('#black').removeClass('btn-primary').addClass('btn-danger').addClass('disabled');
-                $('#tie').removeClass('btn-primary').addClass('btn-danger').addClass('disabled');
-                $('#white').removeClass('btn-primary').addClass('btn-success').addClass('disabled');
-                $('#feedback_white_incorrect').show();
-                lastAnswers.push("❌");
-            } else if (answer == 'tie') {
-                $('#white').removeClass('btn-primary').addClass('btn-danger').addClass('disabled');
-                $('#tie').removeClass('btn-primary').addClass('btn-success').addClass('disabled');
-                $('#black').removeClass('btn-primary').addClass('btn-danger').addClass('disabled');
-                $('#feedback_white_incorrect').text("Incorrect! Its a tie!");
-                $('#feedback_white_incorrect').show();
-                lastAnswers.push("❌");
-            }
-            $('#next').show();
-            updateLastAnswers();
-        })
-        $("#tie").click(function () {
-            if (answer == 'tie') {
-                $('#tie').removeClass('btn-primary').addClass('btn-success').addClass('disabled');
-                $('#white').removeClass('btn-primary').addClass('btn-danger').addClass('disabled');
-                $('#black').removeClass('btn-primary').addClass('btn-danger').addClass('disabled');
-                $('#feedback_tie_correct').show();
-                lastAnswers.push("✅");
-            } else if (answer == 'white') {
-                $('#tie').removeClass('btn-primary').addClass('btn-danger').addClass('disabled');
-                $('#white').removeClass('btn-primary').addClass('btn-success').addClass('disabled');
-                $('#black').removeClass('btn-primary').addClass('btn-danger').addClass('disabled');
-                $('#feedback_white_incorrect').show();
-                lastAnswers.push("❌");
-            } else if (answer == 'black') {
-                $('#tie').removeClass('btn-primary').addClass('btn-danger').addClass('disabled');
-                $('#white').removeClass('btn-primary').addClass('btn-danger').addClass('disabled');
-                $('#black').removeClass('btn-primary').addClass('btn-success').addClass('disabled');
-                $('#feedback_black_incorrect').show();
-                lastAnswers.push("❌");
-            }
-            $('#next').show();
-            updateLastAnswers();
-        })
+        
         $("#nextButton").click(function () {
-            next();
-            
-        })
-        $("#nextButton2").click(function () {
             console.log("clicked")
             next();
         })
-        $("#picture1").click(() => {
-            if (answer == "position1") {
-                $("#feedback_position1_correct").show();
-                lastAnswers.push("✅");
-            } else {
-                $("#feedback_position2_incorrect").show();
-                lastAnswers.push("❌");
-            }
-            $("#compare > #next").show();
-            $("#info").show();
-            updateLastAnswers();
-        })
-        $("#picture2").click(() => {
-            if (answer == "position2") {
-                $("#feedback_position2_correct").show();
-                lastAnswers.push("✅");
-            } else {
-                $("#feedback_position1_incorrect").show();
-                lastAnswers.push("❌");
-            }
-            $("#compare > #next").show();
-            $("#info").show();
-            updateLastAnswers();
-        })
+        
 
         function updateLastAnswers() {
             // Save this in the browser
@@ -266,26 +139,72 @@
             for (let i = Math.max(0, lastAnswers.length - 5); i < lastAnswers.length; i++) {
                 $("#answersList").append(lastAnswers[i]);
             }
+            let correct = lastAnswers.filter(x => x == "✅").length;
+            let total = lastAnswers.length;
+            if (total == 0) {
+                $("#accuracy").text(`Accuracy: 0 / 0 (0%)`);
+            } else {
+                $("#accuracy").text(`Accuracy: ${correct} / ${total} (${(correct / total * 100).toFixed(0)}%)`);
+            }
         }
+
         function getBasic() {
+            $.get("/blueprint/basic").then((data) => {
+                $("#card").html(data);
+                // Data is the contents of #basic-old
+                $.get("/api/random").then((data) => {
+                    // data is a json object with keys board_fen, svg, evaluation, and answer
+                    if (useChessJs) {
+                        var board = Chessboard("#basic > div > #chessboard > #interactive", data["board_fen"])
+                        console.log("Chessboard.js temporarily disabled")
+                    }
+                    $("#basic > div > #chessboard > #picture").attr("src", "/picture?board_fen=" + data["board_fen"])
+                    $("#value").text("Analysis value " + (data["value"] / 100).toFixed(2))
+                    $("#fen").text("(" + data["board_fen"] + ")");
+                    $("#currentmove").text("Current move: " + data["color"]);
+                    $.get("/api/best?board_fen=" + data["board_fen"]).then((bestmove) => {
+                        $("#fen").html("<i>(" + data["board_fen"] + ", Best move: " + bestmove["best_move"] + ")</i>");
+                    })
+                    answer = data["answer"];
+                })
+            })
+        }
+
+        function getBasicOld() {
+
             $.get("/api/random").then((data) => {
                 // data is a json object with keys board_fen, svg, evaluation, and answer
-                $("#picture").attr("src", "/picture?board_fen=" + data["board_fen"])
+                if (useChessJs) {
+                    var board = Chessboard("#basic > div > #chessboard > #interactive", data["board_fen"])
+                }
+                $("#basic > div > #chessboard > #picture").attr("src", "/picture?board_fen=" + data["board_fen"])
                 $("#value").text("Analysis value " + (data["value"] / 100).toFixed(2))
                 $("#fen").text("(" + data["board_fen"] + ")");
+                $.get("/api/best?board_fen=" + data["board_fen"]).then((bestmove) => {
+                    $("#fen").html("<i>(" + data["board_fen"] + ", Best move: " + bestmove["best_move"] + ")</i>");
+                })
                 answer = data["answer"];
             })
         }
+
         async function getCompare() {
+            $.get("/blueprint/compare").then((data) => {
+                $("#card").html(data);
+                // Data is the contents of #compare-old
+                getCompareOld();
+            })
+        }
+
+        async function getCompareOld() {
             var compareWhite = Math.random() < 0.5;
             if (compareWhite) {
-                $("#compare_prompt > h2").text("In which position is WHITE better off?");
+                $("#compare_prompt > h2 > #comparecolor").text("WHITE");
                 $("#feedback_position1_correct").text("Correct! Position 1 is better for White.");
                 $("#feedback_position2_correct").text("Correct! Position 2 is better for White.");
                 $("#feedback_position1_incorrect").text("Incorrect! Position 1 is better for White.");
                 $("#feedback_position2_incorrect").text("Incorrect! Position 2 is better for White.");
             } else {
-                $("#compare_prompt > h2").text("In which position is BLACK better off?");
+                $("#compare_prompt > h2 > #comparecolor").text("BLACK");
                 $("#feedback_position1_correct").text("Correct! Position 1 is better for Black.");
                 $("#feedback_position2_correct").text("Correct! Position 2 is better for Black.");
                 $("#feedback_position1_incorrect").text("Incorrect! Position 1 is better for Black.");
@@ -295,15 +214,15 @@
             var position2 = null;
             $.get("/api/random").then((data) => {
                 // data is a json object with keys board_fen, svg, evaluation, and answer
-                $("#picture1").attr("src", "/picture?board_fen=" + data["board_fen"])
+                $("#compare > div > div > #chessboard_left > #picture").attr("src", "/picture?board_fen=" + data["board_fen"])
                 position1 = data["value"];
                 $("#value1").text("Analysis value " + (data["value"] / 100).toFixed(2))
                 $("#fen1").text("(" + data["board_fen"] + ")");
-                
+
                 // Nested $.get to ensure both requests are completed
                 $.get("/api/random").then((data) => {
                     // data is a json object with keys board_fen, svg, evaluation, and answer
-                    $("#picture2").attr("src", "/picture?board_fen=" + data["board_fen"])
+                    $("#compare > div > div > #chessboard_right > #picture").attr("src", "/picture?board_fen=" + data["board_fen"])
                     position2 = data["value"];
                     $("#value2").text("Analysis value " + (data["value"] / 100).toFixed(2))
                     $("#fen2").text("(" + data["board_fen"] + ")");
@@ -319,18 +238,64 @@
                 });
             });
         }
+
+        async function getChoose() {
+            $.get("/blueprint/choices").then((data) => {
+                $("#card").html(data);
+                // Data is the contents of #choose-old
+                getChoices();
+            })
+        }
         async function next() {
-            isBasic = Math.random() < 0.5;
-            if (isBasic) {
+            console.log("Next button clicked")
+            // Show spinner for 1 seconds
+            $("#loader").show();
+            questionType = Math.floor(Math.random() * 3) // 0 = basic, 1 = compare, 2 = choose
+            if (questionType == 0) {
                 getBasic();
-                $("#basic").show();
-                $("#compare").hide();
-            } else {
-                $("#basic").hide();
-                $("#compare").show();
-                await getCompare();
+            } else if (questionType == 1) {
+                getCompare();
+            } else if (questionType == 2) {
+                getChoose();
             }
-            $('#white').removeClass('btn-success').removeClass('btn-danger').addClass('btn-primary').removeClass('disabled');
+            // Hide the spinner when all network events stop
+            $(document).ajaxStop(function () {
+                if ($.active === 0) { // Ensure all requests are completed
+                    $("#loader").hide();
+                }
+            }).ajaxError(function () {
+                $("#loader").show();
+                console.log("An error occurred during an AJAX request.");
+                // Create and show a toast to the user
+                const toastHTML = `
+                    <div class="toast align-items-center text-bg-danger border-0" id="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                        <div class="d-flex">
+                            <div class="toast-body">
+                                An error occurred while loading the next question. Please try again.
+                            </div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                    </div>
+                `;
+                let toastContainer = document.querySelector('.toast-container');
+                toastContainer.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+                toastContainer.innerHTML = toastHTML;
+                document.body.appendChild(toastContainer);
+                
+                if (!toastContainer) {
+                    toastContainer = document.createElement('div');
+                    toastContainer.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+                    toastContainer.innerHTML = toastHTML;
+                    document.body.appendChild(toastContainer);
+                }
+                const toastElement = new bootstrap.Toast(toastContainer.querySelector('#toast'));
+                toastElement.show();
+                
+
+            });
+            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+            const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+            /*$('#white').removeClass('btn-success').removeClass('btn-danger').addClass('btn-primary').removeClass('disabled');
             $('#tie').removeClass('btn-success').removeClass('btn-danger').addClass('btn-primary').removeClass('disabled');
             $('#black').removeClass('btn-success').removeClass('btn-danger').addClass('btn-primary').removeClass('disabled');
             $('#feedback_white_correct').hide();
@@ -345,7 +310,7 @@
             $("#feedback_position1_incorrect").hide();
             $("#feedback_position2_incorrect").hide();
             $("#info").hide();
-            $("#compare > #next").hide();
+            $("#compare > #next").hide();*/
         }
     </script>
 </body>

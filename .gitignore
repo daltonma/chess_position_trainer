@@ -20,3 +20,4 @@
 !*.yaml
 !*.toml
 !*.lock
+!static/*

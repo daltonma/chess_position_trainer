@@ -1,0 +1,84 @@
+<div id="compare">
+    <div class="row mb-3" id="compare_prompt">
+        <h2>In which position is <span id="comparecolor"></span> better off?</h2>
+    </div>
+    <div class="row mb-3">
+        <div class="col-4">
+            <div id="chessboard_left" class="option" style="max-width: 100%; max-height: 50vh; height: auto;">
+                <div id="interactive"></div>
+                <img src="/picture" id="picture" />
+            </div>
+        </div>
+        <div class="col-4">
+            <div id="chessboard_right" class="option" style="max-width: 100%; max-height: 50vh; height: auto;">
+                <div id="interactive"></div>
+                <img src="/picture" id="picture" />
+            </div>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div id="feedback_position1_correct" class="text-success" style="display: none;">
+            Correct! Position 1 is better for Black.
+        </div>
+        <div id="feedback_position2_correct" class="text-success" style="display: none;">
+            Correct! Position 2 is better for Black.
+        </div>
+        <div id="feedback_position1_incorrect" class="text-danger" style="display: none;">
+            Incorrect! Position 1 is better for Black.
+        </div>
+        <div id="feedback_position2_incorrect" class="text-danger" style="display: none;">
+            Incorrect! Position 2 is better for Black.
+        </div>
+    </div>
+    <div class="row mb-3" style="display: none;" id="next">
+        <div class="col">
+            <button type="button nextButton" id="nextButton" class="btn btn-primary">Next</button>
+
+        </div>
+    </div>
+    <div class="row mb-3" style="display: none;" id="info">
+        <div class="col-4">
+            <div class="text-muted" style="text-decoration: underline dotted;" data-bs-toggle="tooltip"
+                data-bs-title="The greater the value, the more of an advantage white has." id="value1">Analysis
+                value </div>
+            <div class="text-muted" style="" id="fen1"><i>()</i></div>
+        </div>
+        <div class="col-4">
+            <div class="text-muted" style="text-decoration: underline dotted;" data-bs-toggle="tooltip"
+                data-bs-title="The greater the value, the more of an advantage white has." id="value2">Analysis
+                value </div>
+            <div class="text-muted" style="" id="fen2"><i>()</i></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $("#compare > div > div > #chessboard_left > #picture").click(() => {
+        if (answer == "position1") {
+            $("#feedback_position1_correct").show();
+            lastAnswers.push("✅");
+        } else {
+            $("#feedback_position2_incorrect").show();
+            lastAnswers.push("❌");
+        }
+        $("#compare > #next").show();
+        $("#info").show();
+        updateLastAnswers();
+    })
+    $("#compare > div > div > #chessboard_right > #picture").click(() => {
+        if (answer == "position2") {
+            $("#feedback_position2_correct").show();
+            lastAnswers.push("✅");
+        } else {
+            $("#feedback_position1_incorrect").show();
+            lastAnswers.push("❌");
+        }
+        $("#compare > #next").show();
+        $("#info").show();
+        updateLastAnswers();
+    })
+
+    $("#nextButton").click(function () {
+        next();
+    })
+</script>
